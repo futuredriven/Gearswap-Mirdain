@@ -243,7 +243,7 @@ Ammo_Warning_Limit = 99
 is_Busy = false
 AutoItem = false
 Random_Lockstyle = false
-target_assist = true
+Target_Assist = true
 Lockstyle_List = {}
 
 Elemental_WS = S{
@@ -288,7 +288,7 @@ Divine_Skill = S{'Enlight', 'Enlight II', 'Flash', 'Repose', 'Holy', 'Holy II', 
 BlueNuke = S{'Spectral Floe','Entomb', 'Magic Hammer', 'Tenebral Crush'}
 BlueACC = S{'Cruel Joke','Dream Flower','Reaving Wind'}
 BlueHealing = S{'Magic Fruit','Healing Breeze','Wild Carrot','Plenilune Embrace','Restoral'}
-BlueSkill = S{'Occultation','Erratic Flutter','Nature\'s Meditation','Cocoon','Barrier Tusk','Matellic Body','Mighty Guard'}
+BlueSkill = S{'Occultation','Erratic Flutter','Nature\'s Meditation','Cocoon','Barrier Tusk','Metallic Body','Mighty Guard'}
 BlueTank = S{'Jettatura','Geist Wall','Blank Gaze','Sheep Song','Sandspin','Healing Breeze'}
 
 Elemental_Enfeeble = S{'Burn','Frost','Choke','Rasp','Shock','Drown'}
@@ -1680,8 +1680,10 @@ do
 					end
 				else warn('sets.Weapons.Songs.Midcast not found!') end
 			else warn('sets.Weapons.Songs not found!') end
-			-- Instruments
-			if buffactive['pianissimo'] and not SongCount:contains(spell.name) then
+
+			-- Instruments for pianissimo buffs
+			if spell.target.id ~= player.id and not SongCount:contains(spell.name) and (spell.target.type == 'PLAYER' or spell.target.type == 'NPC') then
+				log('Pianissimo Check')
 				if Instrument then
 					--Check for pianissimo Weapons
 					if Instrument.Pianissimo then
@@ -2737,6 +2739,7 @@ do
 				local Obi = player.inventory["Hachirin-no-Obi"] or player.wardrobe["Hachirin-no-Obi"] or player.wardrobe2["Hachirin-no-Obi"]
 				or player.wardrobe3["Hachirin-no-Obi"] or player.wardrobe4["Hachirin-no-Obi"] or player.wardrobe5["Hachirin-no-Obi"] 
 				or player.wardrobe6["Hachirin-no-Obi"] or player.wardrobe7["Hachirin-no-Obi"] or player.wardrobe8["Hachirin-no-Obi"]
+
 				local Staff = player.inventory["Chatoyant Staff"] or player.wardrobe["Chatoyant Staff"] or player.wardrobe2["Chatoyant Staff"]
 				or player.wardrobe3["Chatoyant Staff"] or player.wardrobe4["Chatoyant Staff"] or player.wardrobe5["Chatoyant Staff"] 
 				or player.wardrobe6["Chatoyant Staff"] or player.wardrobe7["Chatoyant Staff"] or player.wardrobe8["Chatoyant Staff"]
@@ -2744,11 +2747,12 @@ do
 				-- Check for bonus
 				if spell.element == world.day_element then
 					if Obi then built_set = set_combine(built_set, {waist="Hachirin-no-Obi"}) end
-					if Staff then built_set = set_combine(built_set, {main="Chatoyant Staff"}) end
+					if Staff then built_set = set_combine(built_set, sets.Weapons['Light Bonus'], {main="Chatoyant Staff"}) end
 					windower.add_to_chat(8,'[' ..world.day_element.. '] day - using Bonus Gear')
+
 				elseif world.weather_element == spell.element then
 					if Obi then built_set = set_combine(built_set, {waist="Hachirin-no-Obi"}) end
-					if Staff then built_set = set_combine(built_set, {main="Chatoyant Staff"}) end
+					if Staff then built_set = set_combine(built_set, sets.Weapons['Light Bonus'], {main="Chatoyant Staff"}) end
 					windower.add_to_chat(8,'Weather is ['.. world.weather_element .. '] - using Bonus Gear')
 				end
 			end
